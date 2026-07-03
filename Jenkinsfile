@@ -1,10 +1,6 @@
 pipeline {
     agent any
     
-    tools {
-    sonarRunner 'sonar-scanner'
-}
-
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
         IMAGE_NAME = 'sxumy4/webapp'
@@ -24,11 +20,14 @@ pipeline {
         stage('SonarQube Analysis') {
     steps {
         withSonarQubeEnv('sonarqube-server') {
-            sh '''
-                sonar-scanner \
-                  -Dsonar.projectKey=webapp-deploy \
-                  -Dsonar.sources=./app
-            '''
+            script {
+                def scannerHome = tool 'sonar-scanner'
+                sh """
+                    ${scannerHome}/bin/sonar-scanner \
+                    -Dsonar.projectKey=webapp-deploy \
+                    -Dsonar.sources=./app
+                """
+            }
         }
     }
 }
