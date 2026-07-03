@@ -5,8 +5,8 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
         IMAGE_NAME = 'sxumy4/webapp'
         IMAGE_TAG = "${BUILD_NUMBER}"
-        SSH_CREDENTIALS = credentials('ec2-ssh-key')
-        EC2_HOST = credentials('ec2-host')
+        // SSH_CREDENTIALS = credentials('ec2-ssh-key')
+        // EC2_HOST = credentials('ec2-host')
     }
 
     stages {
@@ -17,14 +17,17 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+        /*
+        #stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube-server') {
                     sh 'sonar-scanner -Dsonar.projectKey=webapp-deploy -Dsonar.sources=./app'
                 }
             }
         }
+        */
 
+        /*
         stage('Quality Gate') {
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
@@ -32,6 +35,7 @@ pipeline {
                 }
             }
         }
+        */
 
         stage('Build Docker Image') {
             steps {
@@ -53,7 +57,8 @@ pipeline {
             }
         }
 
-        stage('Deploy to EC2') {
+        /*
+        #stage('Deploy to EC2') {
             steps {
                 sshagent(credentials: ['ec2-ssh-key']) {
                     sh """
@@ -68,6 +73,7 @@ pipeline {
             }
         }
     }
+    */
 
     post {
         always {
