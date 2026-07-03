@@ -5,8 +5,8 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
         IMAGE_NAME = 'sxumy4/webapp'
         IMAGE_TAG = "${BUILD_NUMBER}"
-        // SSH_CREDENTIALS = credentials('ec2-ssh-key')
-        // EC2_HOST = credentials('ec2-host')
+        SSH_CREDENTIALS = credentials('ec2-ssh-key')
+        EC2_HOST = credentials('ec2-host')
     }
 
     stages {
@@ -60,22 +60,20 @@ pipeline {
             }
         }
 
-            /*
         stage('Deploy to EC2') {
-            steps {
-                sshagent(credentials: ['ec2-ssh-key']) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ec2-user@${EC2_HOST} '
-                            docker pull ${IMAGE_NAME}:latest &&
-                            docker stop webapp || true &&
-                            docker rm webapp || true &&
-                            docker run -d --restart unless-stopped -p 80:5000 --name webapp ${IMAGE_NAME}:latest
-                        '
-                    """
-                }
-            }
+    steps {
+        sshagent(credentials: ['ec2-ssh-key']) {
+            sh """
+                ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} '
+                    docker pull ${IMAGE_NAME}:latest &&
+                    docker stop webapp || true &&
+                    docker rm webapp || true &&
+                    docker run -d --restart unless-stopped -p 80:5000 --name webapp ${IMAGE_NAME}:latest
+                '
+            """
         }
-        */
+    }
+}
 
     }
 
