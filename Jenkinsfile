@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
-        IMAGE_NAME = 'yourdockerhubuser/webapp'
+        IMAGE_NAME = 'sxumy4/webapp'
         IMAGE_TAG = "${BUILD_NUMBER}"
         SSH_CREDENTIALS = credentials('ec2-ssh-key')
         EC2_HOST = credentials('ec2-host')
@@ -13,7 +13,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/yourusername/your-repo.git'
+                git branch: 'main', url: 'https://github.com/WHYSOUMYA/webapp-deploy-project.git'
             }
         }
 
