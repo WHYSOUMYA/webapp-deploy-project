@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+    sonarScanner 'sonar-scanner'
+}
+
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')
         IMAGE_NAME = 'sxumy4/webapp'
@@ -17,25 +21,25 @@ pipeline {
             }
         }
 
-        /*
-        #stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonarqube-server') {
-                    sh 'sonar-scanner -Dsonar.projectKey=webapp-deploy -Dsonar.sources=./app'
-                }
-            }
+        stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('sonarqube-server') {
+            sh '''
+                sonar-scanner \
+                  -Dsonar.projectKey=webapp-deploy \
+                  -Dsonar.sources=./app
+            '''
         }
-        */
+    }
+}
 
-        /*
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
+       stage('Quality Gate') {
+    steps {
+        timeout(time: 5, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true
         }
-        */
+    }
+}
 
         stage('Build Docker Image') {
             steps {
